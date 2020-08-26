@@ -1,8 +1,10 @@
-package com.osicorp.adebayo_osipitan;
+package com.osicorp.adebayo_osipitan.view;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+
+import com.osicorp.adebayo_osipitan.R;
 
 public class MainActivity extends AppCompatActivity {
 
