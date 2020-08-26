@@ -1,6 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#008577</color>
-    <color name="colorPrimaryDark">#00574B</color>
-    <color name="colorAccent">#D81B60</color>
+    <color name="colorPrimary">#17BA7D</color>
+    <color name="colorAccent">#FF4081</color>
+    <color name="appBackground_white">#ffffff</color>
+    <color name="colorPrimaryDark">#036FB2</color>
+    <color name="colorPrimaryLight">#258ECB</color>
+    <color name="shade">#ffcc00</color>
+    <color name="light_theme_line">#E4E4E4</color>
+    <color name="text_color_dark">#343536</color>
+    <color name="title_color">#029FDA</color>
+    <color name="correct">#00CC00</color>
+    <color name="wrong">#FF0000</color>
+    <color name="ending">#d72027</color>
+    <color name="mid">#DD4E05</color>
+    <color name="start">#32A84A</color>
+    <color name="buttonColor">#258ECB</color>
+    <color name="text_color_light">#666666</color>
+    <color name="ripple_light">#FFFFFF</color>
+    <color name="actionBarColor">#036FB2</color>
+    <color name="neutral_color">#ededed</color>
+    <color name="appBackground_dark">#343536</color>
+    <color name="hint_color">#8c8987</color>
+    <color name="green_color">#2e7d32</color>
+    <color name="green_light_color">#8bc34a</color>
+    <color name="ripple">#ffdd33</color>
+    <color name="segment_three">#59F859</color>
+    <color name="segment_two">#F8AE59</color>"
+    <color name="segment_one">#F85959</color>"
+    <color name="pointer_color">#434854</color>
+    <color name="off_white_background">#ffffe7</color>
+    <color name="shadow">#50CCCCCC</color>
+    <color name="transparent">@android:color/transparent</color>
 </resources>

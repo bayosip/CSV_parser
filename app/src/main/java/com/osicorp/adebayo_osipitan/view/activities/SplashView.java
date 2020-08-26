@@ -1,4 +1,4 @@
-package com.osicorp.adebayo_osipitan.view;
+package com.osicorp.adebayo_osipitan.view.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -6,11 +6,11 @@ import android.os.Bundle;
 
 import com.osicorp.adebayo_osipitan.R;
 
-public class MainActivity extends AppCompatActivity {
+public class SplashView extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_splash_view);
     }
 }

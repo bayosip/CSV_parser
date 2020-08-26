@@ -14,7 +14,7 @@ import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.Toast;
 
 import com.osicorp.adebayo_osipitan.App;
-import com.osicorp.adebayo_osipitan.view.SplashView;
+import com.osicorp.adebayo_osipitan.view.activities.SplashView;
 
 public class GenUtilities {
 
