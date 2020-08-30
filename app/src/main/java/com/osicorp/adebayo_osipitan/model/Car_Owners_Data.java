@@ -1,13 +1,16 @@
 package com.osicorp.adebayo_osipitan.model;
 
+import java.util.LinkedList;
+import java.util.List;
+
 public class Car_Owners_Data {
 
     int id, car_model_year;
     String first_name, last_name, email, country, car_model, car_colour, gender, job_title, bio;
 
 
-    public Car_Owners_Data(int id, int car_model_year, String first_name, String last_name,
-                           String email, String country, String car_model, String car_colour,
+    public Car_Owners_Data(int id,  String first_name, String last_name, String email,
+                           String country, String car_model,int car_model_year, String car_colour,
                            String gender, String job_title, String bio) {
         this.id = id;
         this.car_model_year = car_model_year;
@@ -60,5 +63,14 @@ public class Car_Owners_Data {
 
     public String getBio() {
         return bio;
+    }
+
+    public List<String> dataAsList(String[] data){
+        List<String> carData = new LinkedList<>();
+
+        for (String s: data){
+            carData.add(s);
+        }
+        return carData;
     }
 }

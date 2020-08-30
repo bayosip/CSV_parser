@@ -4,7 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="?android:attr/actionBarSize"
-    android:background="@android:color/white"
+    android:background="@color/colorPrimary"
     android:minHeight="@dimen/abc_action_bar_default_height_material"
     android:elevation="5dp"
     app:popupTheme="@style/AppTheme.PopupOverlay"
@@ -14,15 +14,16 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+
         <androidx.core.widget.ContentLoadingProgressBar
             android:id="@+id/loading_progress"
             style="?android:attr/progressBarStyleHorizontal"
             android:clickable="true"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:indeterminate="false"
-            android:max="100"
-            android:progress="1"
+            android:indeterminate="true"
+            android:layout_marginStart="@dimen/activity_vertical_margin"
+            android:layout_marginEnd="@dimen/activity_vertical_margin"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"/>
@@ -30,56 +31,44 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/simpleToolbarView"
             android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            android:padding="@dimen/appbar_padding"
-            android:visibility="gone"
+            android:layout_height="wrap_content"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent">
 
             <TextView
-                android:id="@+id/frag_toolbar_name"
+                android:id="@+id/frag_toolbar_icar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@android:color/white"
+                android:text="iCar"
+                android:textStyle="bold"
+                android:gravity="top"
+                android:textSize="@dimen/title_size"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintVertical_bias="0.25"/>
+
+            <TextView
+                android:id="@+id/frag_toolbar_filter"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:textColor="@color/text_color_light"
+                android:textColor="@android:color/white"
                 android:text="Scheduler"
                 android:textStyle="bold"
                 android:gravity="center"
-                android:autoSizeMaxTextSize="@dimen/title_size_small"
-                android:autoSizeMinTextSize="11sp"
-                android:autoSizeStepGranularity="1sp"
-                android:autoSizeTextType="uniform"
+                android:textSize="@dimen/title_size_small"
                 android:textAppearance="?android:attr/textAppearanceLarge"
                 android:layout_gravity="center"
+                android:visibility="gone"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.45"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"/>
         </androidx.constraintlayout.widget.ConstraintLayout>
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/profileToolbarView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:padding="@dimen/appbar_padding"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent">
-
-            <ImageView
-                android:id="@+id/imageHomeProfile"
-                android:layout_width="25dp"
-                android:layout_height="match_parent"
-                android:background="@drawable/circle"
-                android:scaleType="fitXY"
-                android:src="@drawable/ic_person_24dp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"/>
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.appcompat.widget.Toolbar>

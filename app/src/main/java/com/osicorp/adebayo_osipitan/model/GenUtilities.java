@@ -34,7 +34,7 @@ public class GenUtilities {
         return handler;
     }
 
-    public static void  message (Context context, String message){
+    public static void  message ( String message){
         Toast.makeText(App.context, message, Toast.LENGTH_SHORT).show();
     }
 
