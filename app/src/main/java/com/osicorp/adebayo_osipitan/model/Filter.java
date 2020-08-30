@@ -1,10 +1,11 @@
 package com.osicorp.adebayo_osipitan.model;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class Filter {
+public class Filter implements Serializable {
 
     int id, start_year, end_year;
     String gender;

@@ -40,7 +40,7 @@ public class FilterSelectionFragment extends BaseFragment implements AdapterView
 
     private FilterSelectionFragment(){}
 
-    public static Fragment getInstance(){
+    public static FilterSelectionFragment getInstance(){
         FilterSelectionFragment fragment =  new FilterSelectionFragment();
         return fragment;
     }
@@ -102,7 +102,7 @@ public class FilterSelectionFragment extends BaseFragment implements AdapterView
         selectedFilter = filter;
         endYear.setText("" + filter.getEnd_year());
         startYear.setText("" + filter.getStart_year());
-        startYear.setText(filter.getGender());
+        gender.setText(filter.getGender());
 
         if (filter.getCountries().length>0){
             SimpleListAdapter adapter1 = new SimpleListAdapter(filter.getCountries(),

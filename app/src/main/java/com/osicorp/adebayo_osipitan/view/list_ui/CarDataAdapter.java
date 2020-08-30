@@ -22,6 +22,10 @@ public class CarDataAdapter extends RecyclerView.Adapter<CarDataAdapter.DataView
     FragmentListener listener;
     private DataViewHolder holder;
 
+    public CarDataAdapter(List<Car_Owners_Data> data, FragmentListener listener) {
+        this.data = data;
+        this.listener = listener;
+    }
 
     @NonNull
     @Override
@@ -48,10 +52,9 @@ public class CarDataAdapter extends RecyclerView.Adapter<CarDataAdapter.DataView
         TextView carModel, carYear, carOwner;
         ImageButton details;
 
-
         public DataViewHolder(@NonNull View itemView) {
             super(itemView);
-
+            initWidget(itemView);
         }
 
         private void initWidget(View v){
