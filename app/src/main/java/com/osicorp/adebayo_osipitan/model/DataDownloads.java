@@ -1,10 +1,9 @@
 package com.osicorp.adebayo_osipitan.model;
 
-import android.app.ProgressDialog;
+import android.content.ContentUris;
 import android.os.AsyncTask;
 import android.os.Environment;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.opencsv.CSVReader;
 import com.osicorp.adebayo_osipitan.presenter.DataPresenterInterface;
@@ -19,47 +18,89 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 
 public class DataDownloads implements ModelInteractor {
 
     private static final String TAG = "DataDownloads";
-    private DataPresenterInterface presenterInterface;
-
-    public static ModelInteractor getInstance(DataPresenterInterface presenterInterface){
-        return new DataDownloads(presenterInterface);
+    private int currentLine = 1;
+    public static ModelInteractor getInstance(){
+        return new DataDownloads();
     }
-
-    private DataDownloads(DataPresenterInterface presenterInterface) {
-        this.presenterInterface = presenterInterface;
-    }
+    private DataDownloads() {}
 
     @Override
-    public void getFilterJsonFile(String url) {
-
-    }
-
-    @Override
-    public List<String[]> readCsvDataFile() {
+    public JSONObject getJSonObjectfromFile(String uri) {
         try {
-            File csvfile = new File(Environment.getExternalStorageDirectory() + Constants.CSV_PATH);
-            CSVReader reader = new CSVReader(new FileReader(csvfile.getAbsolutePath()));
-            String[] nextLine;
-            while ((nextLine = reader.readNext()) != null) {
-                // nextLine[] is an array of values from the line
-                System.out.println(nextLine[0] + nextLine[1] + "etc...");
-            }
-        } catch (Exception e) {
+            File jsonfile = new File(uri);
+        }catch (Exception e) {
             e.printStackTrace();
             GenUtilities.message("The specified file was not found");
+        }
+
+        return null;
+    }
+
+    @Override
+    public List<Car_Owners_Data> readCsvDataFile() {
+        //checkForFiles();
+        List<Car_Owners_Data> dataList = new ArrayList<>();
+        if (csvDoesExistInPhone()){
+            try {
+                File csvfile = new File(Environment.getExternalStorageDirectory() + Constants.CSV_PATH);
+                CSVReader reader = new CSVReader(new FileReader(csvfile.getAbsolutePath()));
+                String[] nextLine;
+                int count = currentLine;
+                if ((nextLine = reader.readNext()) != null ) {
+                    while ((nextLine = reader.readNext()) != null && count<=(currentLine+100)) {
+                        reader.skip(currentLine);
+                        // nextLine[] is an array of values from the line a
+                        Car_Owners_Data cod = new Car_Owners_Data(nextLine);
+                        dataList.add(cod);
+                        count++;
+                        Log.w(TAG, "readCsvDataFile: " + cod.dataAsList().toString());
+                    }
+                }
+                return dataList;
+            } catch (Exception e) {
+                e.printStackTrace();
+                GenUtilities.message("The specified file was not found");
+            }
+        }else {
+            Log.w(TAG, "readCsvDataFile: No file found" );
+            GenUtilities.message("No file found");
         }
         return null;
     }
 
+    private boolean csvDoesExistInPhone(){
+        String PATH = Environment.getExternalStorageDirectory()
+                + Constants.CSV_PATH;
+        Log.w(TAG, "PATH: " + PATH);
+        File file = new File(PATH);
+        if(file.exists()) {
+            return true;
+        }
+        return false;
+    }
 
+    private void checkForFiles(){
+        File f = Environment.getExternalStorageDirectory();
+        if(f.exists()) {
+            File[] files = f.listFiles();
+            for (File inFile : files) {
+                Log.w(TAG, "checkForFiles: " + inFile.getAbsolutePath());
+            /*if (inFile.isDirectory()) {
+                // is directory
+            }*/
+            }
+        }
+    }
 
     private class JsonTask extends AsyncTask<String, String, String> {
         File file = null;
+
         private JSONObject convertFileToJson(){
             JSONObject obj = null;
 
@@ -75,9 +116,7 @@ public class DataDownloads implements ModelInteractor {
             FileOutputStream fos = null;
             String fileName = "filter.json";
 
-
             try {
-
                 URL url = new URL(params[0]);
                 connection = (HttpURLConnection) url.openConnection();
                 connection.setRequestMethod("GET");
@@ -85,11 +124,10 @@ public class DataDownloads implements ModelInteractor {
                 connection.connect();
 
                 String PATH = Environment.getExternalStorageDirectory()
-                        + "/download/";
+                        + "/Venten/";
                 Log.d(TAG, "PATH: " + PATH);
 
                 file = new File(PATH);
-
                 if(!file.exists()) {
                     file.mkdirs();
                 }
@@ -106,7 +144,6 @@ public class DataDownloads implements ModelInteractor {
                 }
 
                 is.close();
-
             } catch (MalformedURLException e) {
                 e.printStackTrace();
             } catch (IOException e) {
@@ -134,7 +171,7 @@ public class DataDownloads implements ModelInteractor {
                 pd.dismiss();
             }
             txtJson.setText(result);*/
-            presenterInterface.retrieveFilterAsJson(null);
+            //presenterInterface.retrieveFilterAsJson(null);
         }
     }
 

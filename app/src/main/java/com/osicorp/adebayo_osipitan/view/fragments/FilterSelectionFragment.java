@@ -1,6 +1,7 @@
 package com.osicorp.adebayo_osipitan.view.fragments;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,6 +22,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.labo.kaji.fragmentanimations.MoveAnimation;
 import com.osicorp.adebayo_osipitan.R;
 import com.osicorp.adebayo_osipitan.model.Filter;
+import com.osicorp.adebayo_osipitan.model.FilterDownloadService;
 import com.osicorp.adebayo_osipitan.view.FragmentListener;
 import com.osicorp.adebayo_osipitan.view.list_ui.SimpleListAdapter;
 
@@ -57,6 +59,9 @@ public class FilterSelectionFragment extends BaseFragment implements AdapterView
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         init();
         initWidget(view);
+        Intent intent = new Intent(listener.getViewContext(), FilterDownloadService.class);
+        listener.getViewContext().startService(intent);
+        listener.showProgress();
     }
 
     private void init(){

@@ -38,7 +38,7 @@
             app:layout_constraintBottom_toBottomOf="parent">
 
             <TextView
-                android:id="@+id/frag_toolbar_icar"
+                android:id="@+id/toolbar_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@android:color/white"
@@ -53,22 +53,8 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintVertical_bias="0.25"/>
 
-            <TextView
-                android:id="@+id/frag_toolbar_filter"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:textColor="@android:color/white"
-                android:text="Scheduler"
-                android:textStyle="bold"
-                android:gravity="center"
-                android:textSize="@dimen/title_size_small"
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:layout_gravity="center"
-                android:visibility="gone"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"/>
         </androidx.constraintlayout.widget.ConstraintLayout>
+
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.appcompat.widget.Toolbar>

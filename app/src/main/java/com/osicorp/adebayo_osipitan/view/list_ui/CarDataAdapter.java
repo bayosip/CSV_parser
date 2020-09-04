@@ -72,7 +72,11 @@ public class CarDataAdapter extends RecyclerView.Adapter<CarDataAdapter.DataView
         }
 
         public void setCarData(List<Car_Owners_Data> data) {
-
+            carModel.setText(data.get(getAdapterPosition()).getCar_model());
+            carYear.setText(""+data.get(getAdapterPosition()).getCar_model_year());
+            String name = data.get(getAdapterPosition()).getFirst_name()+" "
+                    + data.get(getAdapterPosition()).getLast_name();
+            carOwner.setText(name);
         }
     }
 }

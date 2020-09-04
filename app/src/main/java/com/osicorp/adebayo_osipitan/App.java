@@ -3,8 +3,6 @@ package com.osicorp.adebayo_osipitan;
 import android.app.Application;
 import android.content.Context;
 import androidx.multidex.MultiDex;
-import java.util.LinkedList;
-import java.util.List;
 
 
 public class App extends Application {
@@ -21,9 +19,6 @@ public class App extends Application {
     @Override
     protected void attachBaseContext(Context base) {
         super.attachBaseContext(base);
-        MultiDex.install(this);
-
-        List<Integer> m = new LinkedList<>();
-
+        MultiDex.install(App.this);
     }
 }

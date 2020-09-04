@@ -4,7 +4,7 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="@dimen/activity_vertical_margin"
+    android:padding="@dimen/inside_padding"
     android:background="@drawable/underline_view">
 
     <com.mikhaellopez.circularimageview.CircularImageView
@@ -29,25 +29,25 @@
         app:layout_constraintStart_toEndOf="@id/logo"/>
 
     <TextView
-        android:layout_marginTop="@dimen/inside_padding"
+        android:layout_marginTop="@dimen/appbar_padding"
         android:id="@+id/textCarYear"
         android:layout_marginStart="@dimen/activity_vertical_margin"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="@color/colorAccentDark"
-        android:textSize="@dimen/text_size_big"
+        android:textSize="@dimen/text_size"
         android:text="Car year"
         app:layout_constraintTop_toBottomOf="@id/textCarName"
         app:layout_constraintStart_toEndOf="@id/logo"/>
 
     <TextView
-        android:layout_marginTop="@dimen/inside_padding"
+        android:layout_marginTop="@dimen/appbar_padding"
         android:id="@+id/textOwnerName"
         android:layout_marginStart="@dimen/activity_vertical_margin"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="@color/colorAccent"
-        android:textSize="@dimen/text_size_big"
+        android:textSize="@dimen/text_size"
         android:text="Car owner"
         app:layout_constraintTop_toBottomOf="@id/textCarYear"
         app:layout_constraintStart_toEndOf="@id/logo"/>

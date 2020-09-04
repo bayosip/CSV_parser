@@ -7,6 +7,7 @@ import android.animation.PropertyValuesHolder;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Handler;
 import android.view.View;
@@ -20,6 +21,8 @@ public class GenUtilities {
 
 
     private static Handler handler;
+    private static final String APP_PREFS_NAME = "com.osicorp.adebayo_osipitan.app_pref";
+    private static SharedPreferences appPref;
 
     public static void exitApp(Activity activity){
         if(Build.VERSION.SDK_INT >= 21) activity.finishAndRemoveTask();
@@ -36,6 +39,13 @@ public class GenUtilities {
 
     public static void  message ( String message){
         Toast.makeText(App.context, message, Toast.LENGTH_SHORT).show();
+    }
+
+    public static SharedPreferences getAppPref() {
+        if (appPref == null) appPref = App.context.getSharedPreferences(APP_PREFS_NAME,
+                Context.MODE_PRIVATE);
+
+        return appPref;
     }
 
     public static void pulse(final View view){
