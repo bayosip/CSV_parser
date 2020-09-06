@@ -30,7 +30,8 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="7"
-            android:hint="Search Car"/>
+            android:hint="@string/search_car_model"
+            android:focusable="false"/>
 
         <ImageButton
             android:id="@+id/buttonFilter"
@@ -59,7 +60,7 @@
         android:id="@+id/buttonLoadMore"
         android:layout_width="wrap_content"
         android:layout_height="40dp"
-        android:padding="12dp"
+        android:padding="@dimen/inside_padding"
         android:text="Click to Load More"
         android:visibility="gone"
         style="@style/App_Button"

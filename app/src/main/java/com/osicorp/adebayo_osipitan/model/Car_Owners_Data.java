@@ -1,9 +1,10 @@
 package com.osicorp.adebayo_osipitan.model;
 
+import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
 
-public class Car_Owners_Data {
+public class Car_Owners_Data implements Serializable {
 
     private int id, car_model_year;
     private String first_name, last_name, email, country, car_model, car_colour, gender, job_title, bio;

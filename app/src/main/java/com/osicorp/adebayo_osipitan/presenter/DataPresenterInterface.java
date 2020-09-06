@@ -13,4 +13,6 @@ public interface DataPresenterInterface {
      BroadcastReceiver getDownloadReciever();
 
     void applyFilterToList(Filter filter);
+
+    void clearAllFiltersorSearch();
 }

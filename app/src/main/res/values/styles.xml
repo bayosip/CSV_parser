@@ -6,6 +6,8 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+
+        <item name="colorControlNormal">@color/off_white_background</item>
     </style>
 
     <style name="AppTheme.Splash" parent="@style/Theme.AppCompat.Light.NoActionBar">
@@ -14,6 +16,7 @@
         <item name="colorAccent">@color/colorAccent</item>
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
+        <item name="android:homeAsUpIndicator">@drawable/ic_back_24dp</item>
     </style>
 
     <style name="AppTheme.AppBarOverlay" parent="android:ThemeOverlay.Material.Dark.ActionBar" />

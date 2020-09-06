@@ -7,6 +7,8 @@ import androidx.core.widget.ContentLoadingProgressBar;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.lifecycle.Lifecycle;
+
 import android.app.Activity;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -73,7 +75,6 @@ public class MainActivity extends AppCompatActivity implements MainViewInterface
 
     @Override
     public void changeToFilterFragment() {
-        removeCurrentFragment();
         openFilterFrag();
     }
 
@@ -105,12 +106,14 @@ public class MainActivity extends AppCompatActivity implements MainViewInterface
         ab.setDisplayShowTitleEnabled(false); // disable the default title element here (for centered title)
     }
 
+    @Override
     public void openListFrag() {
+        removeCurrentFragment();
         setupActionBar();
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-
         fragmentTransaction.add(R.id.frag_layout, listFrag, "List");
+        fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commitAllowingStateLoss();
         //this.title.setText("iCar");
     }
@@ -122,6 +125,9 @@ public class MainActivity extends AppCompatActivity implements MainViewInterface
             FragmentManager fragmentManager = getSupportFragmentManager();
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
 
+            if (fragment.getLifecycle().getCurrentState() != Lifecycle.State.INITIALIZED) {
+                return null;
+            }
             fragmentTransaction.remove(fragment).commitAllowingStateLoss();
             return tag;
         }else {
@@ -134,8 +140,8 @@ public class MainActivity extends AppCompatActivity implements MainViewInterface
         setupOtherActionBar();
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-
-        fragmentTransaction.add(R.id.frag_layout, fSFrag, "Filter");
+        fragmentTransaction.replace(R.id.frag_layout, fSFrag, "Filter");
+        fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commitAllowingStateLoss();
     }
 
@@ -181,7 +187,14 @@ public class MainActivity extends AppCompatActivity implements MainViewInterface
 
     @Override
     public void applyAPresetFilter(Filter filter) {
+        onBackPressed();
         presenter.applyFilterToList(filter);
+    }
+
+    @Override
+    public void clearFilter() {
+        onBackPressed();
+        presenter.clearAllFiltersorSearch();
     }
 
     @Override
@@ -203,11 +216,13 @@ public class MainActivity extends AppCompatActivity implements MainViewInterface
 
     @Override
     public void onBackPressed() {
-        String tag = removeCurrentFragment();
-       if(!TextUtils.isEmpty(tag) && tag.equalsIgnoreCase("Filter")){
-            openListFrag();
-        } else {
+        Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.frag_layout);
+        String tag =  fragment!= null ? fragment.getTag(): null;
+       if(!TextUtils.isEmpty(tag) && tag.equalsIgnoreCase("List")){
             GenUtilities.exitApp(MainActivity.this);
-        }
+        }else {
+           setupActionBar();
+           getSupportFragmentManager().popBackStackImmediate();
+       }
     }
 }

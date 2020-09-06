@@ -31,6 +31,7 @@ public class CarListFragment extends BaseFragment {
     private List<Car_Owners_Data>  displayList;
     private CarDataAdapter adapter;
     private Boolean reachedBottom = false;
+    private static  boolean isFirstLoad = true;
 
     public static CarListFragment getInstance(){
         return new CarListFragment();
@@ -49,12 +50,16 @@ public class CarListFragment extends BaseFragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         init();
         initWidget(view);
-        listener.loadCarData();
+        if(isFirstLoad) {
+            listener.loadCarData();
+            isFirstLoad = false;
+        }
     }
 
     private void init(){
         displayList = new ArrayList<>();
         displayList.clear();
+        if(listener.getFullList().size()>0)displayList.addAll(listener.getFullList());
     }
 
     private void initWidget(View v){
@@ -75,6 +80,7 @@ public class CarListFragment extends BaseFragment {
                 super.onScrolled(recyclerView, dx, dy);
                 reachedBottom = !recyclerView.canScrollVertically(1);
                 if (reachedBottom) {
+                    loadMore.setEnabled(true);
                     loadMore.setVisibility(View.VISIBLE);
                 }
             }
@@ -90,6 +96,7 @@ public class CarListFragment extends BaseFragment {
         loadMore.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                loadMore.setEnabled(false);
                 listener.loadCarData();
             }
         });
@@ -111,6 +118,12 @@ public class CarListFragment extends BaseFragment {
         displayList.clear();
         displayList.addAll(result);
         adapter.notifyDataSetChanged();
+
+        if(result.size() == 0){
+            loadMore.setEnabled(true);
+            loadMore.setText("Load More and Filter");
+            loadMore.setVisibility(View.VISIBLE);
+        }
     }
 
     private void searchForCarModel(String model){

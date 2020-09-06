@@ -12,6 +12,7 @@ public interface FragmentListener {
     List<Car_Owners_Data> getFullList();
     void searchListForCarModel(String carModel);
     void applyAPresetFilter(Filter filter);
+    void openListFrag();
     void showInDetail(int adapterPosition);
 
     void loadCarData();
@@ -21,4 +22,6 @@ public interface FragmentListener {
     void changeToFilterFragment();
 
     void loadFilters();
+
+    void clearFilter();
 }

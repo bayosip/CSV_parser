@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Handler;
+import android.os.Looper;
 import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.Toast;
@@ -19,10 +20,13 @@ import com.osicorp.adebayo_osipitan.view.activities.SplashView;
 
 public class GenUtilities {
 
-
-    private static Handler handler;
     private static final String APP_PREFS_NAME = "com.osicorp.adebayo_osipitan.app_pref";
     private static SharedPreferences appPref;
+    private static Handler handler;
+
+    static {
+        handler = new Handler(Looper.getMainLooper());
+    }
 
     public static void exitApp(Activity activity){
         if(Build.VERSION.SDK_INT >= 21) activity.finishAndRemoveTask();

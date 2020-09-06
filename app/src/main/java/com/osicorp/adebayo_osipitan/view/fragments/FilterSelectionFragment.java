@@ -98,10 +98,19 @@ public class FilterSelectionFragment extends BaseFragment implements AdapterView
         startYear = view.findViewById(R.id.textStart);
         gender = view.findViewById(R.id.textGender);
         applyFilter = view.findViewById(R.id.buttonApplyFilter);
+        clear =  view.findViewById(R.id.buttonClearFilter);
+
         applyFilter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 listener.applyAPresetFilter(selectedFilter);
+            }
+        });
+
+        clear.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                listener.clearFilter();
             }
         });
     }
@@ -161,6 +170,5 @@ public class FilterSelectionFragment extends BaseFragment implements AdapterView
 
         // attaching data adapter to spinner
         filterPicker.setAdapter(dataAdapter);
-
     }
 }

@@ -54,6 +54,7 @@ public class MainPresenter extends BasePresenter<MainViewInterface>  {
     @Override
     public void retrieveFilterAsJson(String uri) {
         viewInterface.hideProgress();
+        filters.clear();
         JSONArray obj = interactor.getJSonObjectfromFile(uri);
 
         for (int i = 0; i< obj.length(); i++){
@@ -76,22 +77,34 @@ public class MainPresenter extends BasePresenter<MainViewInterface>  {
         List<Car_Owners_Data> incomingData = interactor.readCsvDataFile();
         if(incomingData!=null) {
             carData.addAll(incomingData);
-            viewInterface.updateDataListWith(incomingData);
+            if(appliedFilter==null)
+                viewInterface.updateDataListWith(incomingData);
+            else {
+                applyFilterToList(appliedFilter);
+            }
         }
     }
 
     @Override
-    public void applyFilterToList(Filter filter) {
-        List<Car_Owners_Data> filterData = new ArrayList<>();
-        for (Car_Owners_Data data : carData){
-            if(doesDataMatchFilter(filter, data)){
-                filterData.add(data);
+    public void applyFilterToList(final Filter filter) {
+        appliedFilter = filter;
+        GenUtilities.getHandler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                List<Car_Owners_Data> filterData = new ArrayList<>();
+                for (Car_Owners_Data data : carData){
+                    if(doesDataMatchFilter(filter, data)){
+                        filterData.add(data);
+                        Log.w(TAG, "run: " + data.getCar_model());
+                    }
+                }
+                viewInterface.updateDataListWithFilter(filterData);
             }
-        }
-        viewInterface.updateDataListWithFilter(filterData);
+        }, 3000);
     }
 
     protected boolean doesDataMatchFilter(Filter filter, Car_Owners_Data data){
+        Log.w(TAG, "-- new Car --" );
         Map<String, Object> map= filter.filterMap();
         boolean isFilterMatch = true;
         for(String key: map.keySet()){
@@ -114,25 +127,31 @@ public class MainPresenter extends BasePresenter<MainViewInterface>  {
                 }
             }
         }else if(key.equalsIgnoreCase(Constants.KEY_GENDER)){
-            if(data.getGender().equalsIgnoreCase(filter.getGender())){
-                isCategoryMatch = true;
-            }
+            if (!TextUtils.isEmpty(filter.getGender())) {
+                if (data.getGender().equalsIgnoreCase(filter.getGender())) {
+                    isCategoryMatch = true;
+                }
+            }else isCategoryMatch = true;
         }else if(key.equalsIgnoreCase(Constants.KEY_COLORS)){
-            for (String color: filter.getColors()){
-                if (color.equalsIgnoreCase(data.getCar_colour())){
-                    isCategoryMatch = true;
-                    break;
+            if (filter.getColors() != null) {
+                for (String color : filter.getColors()) {
+                    if (color.equalsIgnoreCase(data.getCar_colour())) {
+                        isCategoryMatch = true;
+                        break;
+                    }
                 }
-            }
+            }else isCategoryMatch = true;
         }else if(key.equalsIgnoreCase(Constants.KEY_COUNTRIES)){
-            for (String country: filter.getCountries()){
-                if (country.equalsIgnoreCase(data.getCountry())){
-                    isCategoryMatch = true;
-                    break;
+            if(filter.getCountries()!=null) {
+                for (String country : filter.getCountries()) {
+                    if (country.equalsIgnoreCase(data.getCountry())) {
+                        isCategoryMatch = true;
+                        break;
+                    }
                 }
-            }
+            }else isCategoryMatch = true;
         }
-
+        Log.w(TAG, "checkEachFilterCategoryForMatch: " + key + " is - " + isCategoryMatch);
         return isCategoryMatch;
     }
 
@@ -179,4 +198,10 @@ public class MainPresenter extends BasePresenter<MainViewInterface>  {
             }
         }
     };
+
+    @Override
+    public void clearAllFiltersorSearch() {
+        appliedFilter = null;
+        viewInterface.updateDataListWith(carData);
+    }
 }
