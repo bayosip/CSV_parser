@@ -25,6 +25,10 @@ public class FilterDownloadService extends IntentService {
     public static final String RESULT = "result";
     private int result = Activity.RESULT_CANCELED;
 
+    public FilterDownloadService() {
+        super(null);
+    }
+
     /**
      * Creates an IntentService.  Invoked by your subclass's constructor.
      *
@@ -41,6 +45,7 @@ public class FilterDownloadService extends IntentService {
 
     @Override
     public void onCreate() {
+        super.onCreate();
         GenUtilities.message("Service Created");
 
         appPref = GenUtilities.getAppPref();
@@ -48,8 +53,7 @@ public class FilterDownloadService extends IntentService {
     }
 
     private void downloadJson(){
-        File file = null;
-
+        File outputFile =null;
         HttpURLConnection connection = null;
         FileOutputStream fos = null;
         String fileName = "filter.json";
@@ -65,12 +69,12 @@ public class FilterDownloadService extends IntentService {
                     + "/Venten/";
             Log.d(TAG, "PATH: " + PATH);
 
-            file = new File(PATH);
+            File file = new File(PATH);
             if(!file.exists()) {
                 file.mkdirs();
             }
 
-            File outputFile = new File(file, fileName);
+            outputFile = new File(file, fileName);
             if (outputFile.exists()) {
                 outputFile.delete();
             }
@@ -92,8 +96,8 @@ public class FilterDownloadService extends IntentService {
         } finally {
             if (connection != null) {
                 connection.disconnect();
-                if(file!=null && result == Activity.RESULT_OK)
-                    editor.putString(Constants.FILE_KEY, file.getAbsolutePath()).commit();
+                if(outputFile!=null && result == Activity.RESULT_OK)
+                    editor.putString(Constants.FILE_KEY, outputFile.getAbsolutePath()).commit();
             }
             try {
                 if (fos != null) {
@@ -104,7 +108,7 @@ public class FilterDownloadService extends IntentService {
                 e.printStackTrace();
             }
         }
-        publishResults(file.getAbsolutePath(),result);
+        publishResults(outputFile.getAbsolutePath(),result);
     }
 
     private void publishResults(String outputPath, int result) {

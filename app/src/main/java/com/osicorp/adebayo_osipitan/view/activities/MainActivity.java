@@ -10,10 +10,12 @@ import androidx.fragment.app.FragmentTransaction;
 import android.app.Activity;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.widget.TextView;
 
 import com.osicorp.adebayo_osipitan.R;
 import com.osicorp.adebayo_osipitan.model.Car_Owners_Data;
+import com.osicorp.adebayo_osipitan.model.Constants;
 import com.osicorp.adebayo_osipitan.model.Filter;
 import com.osicorp.adebayo_osipitan.model.GenUtilities;
 import com.osicorp.adebayo_osipitan.presenter.DataPresenterInterface;
@@ -26,6 +28,8 @@ import com.osicorp.adebayo_osipitan.view.fragments.CarListFragment;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements MainViewInterface {
+
+    private static final String TAG = "MainActivity";
 
     private DataPresenterInterface presenter;
     CarOwnerFragment cOFrag;
@@ -41,7 +45,7 @@ public class MainActivity extends AppCompatActivity implements MainViewInterface
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         init();
-        setupActionBar();
+
         openListFrag();
     }
 
@@ -60,6 +64,22 @@ public class MainActivity extends AppCompatActivity implements MainViewInterface
     @Override
     public void showProgress() {
         pb.show();
+    }
+
+    @Override
+    public void hideProgress() {
+        pb.hide();
+    }
+
+    @Override
+    public void changeToFilterFragment() {
+        removeCurrentFragment();
+        openFilterFrag();
+    }
+
+    @Override
+    public void loadFilters() {
+        presenter.retrieveFilterAsJson(GenUtilities.getAppPref().getString(Constants.FILE_KEY, ""));
     }
 
     private void setupActionBar(){
@@ -86,7 +106,7 @@ public class MainActivity extends AppCompatActivity implements MainViewInterface
     }
 
     public void openListFrag() {
-
+        setupActionBar();
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
 
@@ -95,8 +115,23 @@ public class MainActivity extends AppCompatActivity implements MainViewInterface
         //this.title.setText("iCar");
     }
 
-    public void openFilterFrag(){
+    private String removeCurrentFragment() {
+        Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.frag_layout);
+        if (fragment != null) {
+            String tag = fragment.getTag();
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
 
+            fragmentTransaction.remove(fragment).commitAllowingStateLoss();
+            return tag;
+        }else {
+            Log.e(TAG, "removeCurrentFragment: Fragment not removed");
+        }
+        return null;
+    }
+
+    public void openFilterFrag(){
+        setupOtherActionBar();
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
 
@@ -120,13 +155,18 @@ public class MainActivity extends AppCompatActivity implements MainViewInterface
     }
 
     @Override
-    public void updateListWith(List<Car_Owners_Data> moreData) {
+    public void updateDataListWith(List<Car_Owners_Data> moreData) {
         listFrag.addDataToFullList(moreData);
     }
 
     @Override
-    public void updateListWithFilter(List<Car_Owners_Data> filteredData) {
+    public void updateDataListWithFilter(List<Car_Owners_Data> filteredData) {
         listFrag.updateListWithFilteredResults(filteredData);
+    }
+
+    @Override
+    public void updateFilterList(List<Filter> filters) {
+        fSFrag.updateSpinnerWithFilter(filters);
     }
 
     @Override
@@ -141,12 +181,18 @@ public class MainActivity extends AppCompatActivity implements MainViewInterface
 
     @Override
     public void applyAPresetFilter(Filter filter) {
-
+        presenter.applyFilterToList(filter);
     }
 
     @Override
     public void showInDetail(int adapterPosition) {
 
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return true;
     }
 
     @Override
@@ -157,15 +203,9 @@ public class MainActivity extends AppCompatActivity implements MainViewInterface
 
     @Override
     public void onBackPressed() {
-        Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.frag_layout);
-        if (fragment != null) {
-            String tag = fragment.getTag();
-            FragmentManager fragmentManager = getSupportFragmentManager();
-            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-            if (!TextUtils.isEmpty(tag) && tag.equals("Filter")) {
-                fragmentTransaction.remove(fragment).commitAllowingStateLoss();
-            }
-
+        String tag = removeCurrentFragment();
+       if(!TextUtils.isEmpty(tag) && tag.equalsIgnoreCase("Filter")){
+            openListFrag();
         } else {
             GenUtilities.exitApp(MainActivity.this);
         }

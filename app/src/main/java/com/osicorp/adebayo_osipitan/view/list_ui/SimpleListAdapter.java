@@ -34,7 +34,8 @@ public class SimpleListAdapter extends Adapter<SimpleListAdapter.ListViewHolder>
 
     @Override
     public void onBindViewHolder(@NonNull ListViewHolder holder, int position) {
-        holder.setItems(items);
+        if(items.length>0)
+            holder.setItems(items);
     }
 
     @Override

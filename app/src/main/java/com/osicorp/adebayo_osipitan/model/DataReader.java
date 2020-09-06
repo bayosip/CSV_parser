@@ -1,44 +1,58 @@
 package com.osicorp.adebayo_osipitan.model;
 
-import android.content.ContentUris;
 import android.os.AsyncTask;
 import android.os.Environment;
 import android.util.Log;
 
 import com.opencsv.CSVReader;
-import com.osicorp.adebayo_osipitan.presenter.DataPresenterInterface;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Reader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DataDownloads implements ModelInteractor {
+public class DataReader implements ModelInteractor {
 
-    private static final String TAG = "DataDownloads";
+    private static final String TAG = "DataReader";
     private int currentLine = 1;
     public static ModelInteractor getInstance(){
-        return new DataDownloads();
+        return new DataReader();
     }
-    private DataDownloads() {}
+    private DataReader() {}
+
+    private static String readAll(Reader rd) throws IOException {
+        StringBuilder sb = new StringBuilder();
+        int cp;
+        while ((cp = rd.read()) != -1) {
+            sb.append((char) cp);
+        }
+        Log.w(TAG, "readAll: " + sb.toString() );
+        return sb.toString();
+    }
 
     @Override
-    public JSONObject getJSonObjectfromFile(String uri) {
+    public JSONArray getJSonObjectfromFile(String uri) {
         try {
             File jsonfile = new File(uri);
+            BufferedReader rd = new BufferedReader(new FileReader(jsonfile.getAbsolutePath()));
+            String jsonText = readAll(rd);
+            JSONArray json = new JSONArray(jsonText);
+            return json;
         }catch (Exception e) {
             e.printStackTrace();
             GenUtilities.message("The specified file was not found");
         }
-
         return null;
     }
 
@@ -52,16 +66,19 @@ public class DataDownloads implements ModelInteractor {
                 CSVReader reader = new CSVReader(new FileReader(csvfile.getAbsolutePath()));
                 String[] nextLine;
                 int count = currentLine;
-                if ((nextLine = reader.readNext()) != null ) {
-                    while ((nextLine = reader.readNext()) != null && count<=(currentLine+100)) {
-                        reader.skip(currentLine);
+                reader.skip(currentLine);
+                //if((nextLine = reader.readNext() )!= null)
+                {
+                    while ((nextLine = reader.readNext()) != null && count <= (currentLine + 100)) {
                         // nextLine[] is an array of values from the line a
                         Car_Owners_Data cod = new Car_Owners_Data(nextLine);
                         dataList.add(cod);
                         count++;
+
                         Log.w(TAG, "readCsvDataFile: " + cod.dataAsList().toString());
                     }
                 }
+                currentLine = count;
                 return dataList;
             } catch (Exception e) {
                 e.printStackTrace();

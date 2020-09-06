@@ -19,14 +19,14 @@
         <activity android:name=".view.activities.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+                <action android:name="Download_Finished" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
 
         <service
-        android:name=".model.FilterDownloadService"
-        android:enabled="true" />
+        android:name=".model.FilterDownloadService"/>
     </application>
 
 </manifest>

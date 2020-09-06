@@ -17,4 +17,8 @@ public interface FragmentListener {
     void loadCarData();
 
     void showProgress();
+
+    void changeToFilterFragment();
+
+    void loadFilters();
 }

@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 
@@ -25,6 +26,7 @@ public class CarListFragment extends BaseFragment {
 
     private RecyclerView carData;
     private ImageButton filter;
+    private Button loadMore;
     private EditText searchBar;
     private List<Car_Owners_Data>  displayList;
     private CarDataAdapter adapter;
@@ -53,7 +55,6 @@ public class CarListFragment extends BaseFragment {
     private void init(){
         displayList = new ArrayList<>();
         displayList.clear();
-
     }
 
     private void initWidget(View v){
@@ -61,6 +62,7 @@ public class CarListFragment extends BaseFragment {
         carData = v.findViewById(R.id.listCarInfo);
         searchBar = v.findViewById(R.id.editSearch);
         filter = v.findViewById(R.id.buttonFilter);
+        loadMore =v.findViewById(R.id.buttonLoadMore);
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(listener.getViewContext(),
                 RecyclerView.VERTICAL, false);
@@ -73,8 +75,22 @@ public class CarListFragment extends BaseFragment {
                 super.onScrolled(recyclerView, dx, dy);
                 reachedBottom = !recyclerView.canScrollVertically(1);
                 if (reachedBottom) {
-                    listener.loadCarData();
+                    loadMore.setVisibility(View.VISIBLE);
                 }
+            }
+        });
+
+        filter.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                listener.changeToFilterFragment();
+            }
+        });
+
+        loadMore.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                listener.loadCarData();
             }
         });
     }
@@ -86,6 +102,7 @@ public class CarListFragment extends BaseFragment {
     }
 
     public void addDataToFullList(List<Car_Owners_Data> moreData){
+        loadMore.setVisibility(View.GONE);
         displayList.addAll(moreData);
         adapter.notifyItemChanged(0);
     }
@@ -109,6 +126,6 @@ public class CarListFragment extends BaseFragment {
 
     @Override
     public Animation onCreateAnimation(int transit, boolean enter, int nextAnim) {
-        return MoveAnimation.create(MoveAnimation.RIGHT, enter, 500);
+        return MoveAnimation.create(MoveAnimation.RIGHT, enter, 100);
     }
 }

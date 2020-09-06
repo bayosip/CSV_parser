@@ -38,9 +38,9 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_weight="1"
+                android:layout_weight="0.75"
                 android:background="@drawable/underline_view"
-                android:padding="@dimen/activity_vertical_margin"
+                android:padding="@dimen/inside_padding"
                 android:orientation="vertical">
 
                 <TextView
@@ -89,8 +89,8 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_weight="1"
-                android:padding="@dimen/activity_vertical_margin"
+                android:layout_weight="0.75"
+                android:padding="@dimen/inside_padding"
                 android:background="@drawable/underline_view"
                 android:orientation="vertical">
 
@@ -115,7 +115,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_weight="1"
+                android:layout_weight="1.25"
                 android:padding="@dimen/activity_vertical_margin"
                 android:background="@drawable/underline_view"
                 android:orientation="vertical">
@@ -130,7 +130,7 @@
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/listCountries"
-                    android:layout_marginTop="@dimen/activity_vertical_margin"
+                    android:layout_marginTop="@dimen/inside_padding"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
@@ -142,8 +142,8 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_weight="1"
-                android:layout_margin="@dimen/activity_vertical_margin"
+                android:layout_weight="1.25"
+                android:padding="@dimen/activity_vertical_margin"
                 android:background="@drawable/underline_view"
                 android:orientation="vertical">
 
@@ -157,7 +157,7 @@
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/listColours"
-                    android:layout_marginTop="@dimen/activity_vertical_margin"
+                    android:layout_marginTop="@dimen/inside_padding"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"

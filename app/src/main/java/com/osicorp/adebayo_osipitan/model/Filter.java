@@ -1,5 +1,7 @@
 package com.osicorp.adebayo_osipitan.model;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
@@ -7,9 +9,18 @@ import java.util.Map;
 
 public class Filter implements Serializable {
 
-    int id, start_year, end_year;
+    @SerializedName("id")
+    int id;
+    @SerializedName("start_year")
+    int start_year;
+    @SerializedName("end_year")
+    int end_year;
+    @SerializedName("gender")
     String gender;
-    String[] countries, colors;
+    @SerializedName("countries")
+    String[] countries;
+    @SerializedName("colors")
+    String[] colors;
 
 
     public Filter(int id, int start_year, int end_year, String gender,
@@ -48,14 +59,11 @@ public class Filter implements Serializable {
 
     public Map<String, Object> filterMap(){
         Map<String, Object> map = new HashMap<>();
-
-        map.put(Constants.KEY_ID, this.id);
         map.put(Constants.KEY_START, this.start_year);
         map.put(Constants.KEY_END, this.end_year);
         map.put(Constants.KEY_GENDER, this.gender);
         map.put(Constants.KEY_COUNTRIES, this.countries);
         map.put(Constants.KEY_COLORS, this.colors);
-
         return map;
     }
 }

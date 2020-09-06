@@ -3,6 +3,7 @@ package com.osicorp.adebayo_osipitan.view.fragments;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,21 +22,25 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.labo.kaji.fragmentanimations.MoveAnimation;
 import com.osicorp.adebayo_osipitan.R;
+import com.osicorp.adebayo_osipitan.model.Constants;
 import com.osicorp.adebayo_osipitan.model.Filter;
 import com.osicorp.adebayo_osipitan.model.FilterDownloadService;
+import com.osicorp.adebayo_osipitan.model.GenUtilities;
 import com.osicorp.adebayo_osipitan.view.FragmentListener;
 import com.osicorp.adebayo_osipitan.view.list_ui.SimpleListAdapter;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 public class FilterSelectionFragment extends BaseFragment implements AdapterView.OnItemSelectedListener {
 
 
+    private static final String TAG = "FilterSelectionFragment";
     private RecyclerView listCountries, listColors;
     private TextView endYear, startYear, gender;
     private List<Filter> filters;
-    private Button applyFilter;
+    private Button applyFilter, clear;
     private Spinner filterPicker;
     private Filter selectedFilter;
 
@@ -60,12 +65,18 @@ public class FilterSelectionFragment extends BaseFragment implements AdapterView
         init();
         initWidget(view);
         Intent intent = new Intent(listener.getViewContext(), FilterDownloadService.class);
-        listener.getViewContext().startService(intent);
-        listener.showProgress();
+        if (!GenUtilities.getAppPref().contains(Constants.FILE_KEY)) {
+            listener.getViewContext().startService(intent);
+            listener.showProgress();
+        }else {
+            GenUtilities.message("File Already Downloaded");
+            if(filters.size()==0)
+                listener.loadFilters();
+        }
     }
 
     private void init(){
-        filters = new ArrayList<>();
+        filters = new LinkedList<>();
     }
 
     private void initWidget(View view){
@@ -73,23 +84,15 @@ public class FilterSelectionFragment extends BaseFragment implements AdapterView
         filterPicker = view.findViewById(R.id.selectFilterSpinner);
         filterPicker.setOnItemSelectedListener(this);
 
-        // Creating adapter for spinner
-        ArrayAdapter<Filter> dataAdapter = new ArrayAdapter<>(listener.getViewContext(),
-                R.layout.support_simple_spinner_dropdown_item, filters);
-
-        // Drop down layout style - list view with radio button
-        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-
-        // attaching data adapter to spinner
-        filterPicker.setAdapter(dataAdapter);
-
         listCountries = view.findViewById(R.id.listCountries);
         listColors = view.findViewById(R.id.listColours);
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(listener.getViewContext(),
                 RecyclerView.HORIZONTAL, false);
+        LinearLayoutManager layoutManager1 = new LinearLayoutManager(listener.getViewContext(),
+                RecyclerView.HORIZONTAL, false);
         listColors.setLayoutManager(layoutManager);
-        listCountries.setLayoutManager(layoutManager);
+        listCountries.setLayoutManager(layoutManager1);
 
         endYear = view.findViewById(R.id.textEnd);
         startYear = view.findViewById(R.id.textStart);
@@ -109,16 +112,18 @@ public class FilterSelectionFragment extends BaseFragment implements AdapterView
         startYear.setText("" + filter.getStart_year());
         gender.setText(filter.getGender());
 
-        if (filter.getCountries().length>0){
+        //if (filter.getCountries().length>0)
+        {
             SimpleListAdapter adapter1 = new SimpleListAdapter(filter.getCountries(),
                     listener.getViewContext());
-            listCountries.setAdapter(adapter1);
+            listCountries.swapAdapter(adapter1, true);
         }
 
-        if (filter.getColors().length>0){
+        //if (filter.getColors().length>0)
+        {
             SimpleListAdapter adapter2 = new SimpleListAdapter(filter.getColors(),
                     listener.getViewContext());
-            listColors.setAdapter(adapter2);
+            listColors.swapAdapter(adapter2, true);
         }
     }
 
@@ -129,11 +134,33 @@ public class FilterSelectionFragment extends BaseFragment implements AdapterView
 
     @Override
     public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
-        displayFilterSetting(filters.get(position));
+        if(position>0)
+            displayFilterSetting(filters.get(position-1));
     }
 
     @Override
     public void onNothingSelected(AdapterView<?> adapterView) {
+
+    }
+
+    public void updateSpinnerWithFilter(List<Filter> filterList) {
+        filters.clear();
+        filters = filterList;
+        List<String> filterName = new LinkedList<>();
+        filterName.add("--Please Select a Filter--");
+        for (Filter f : filterList){
+            filterName.add( "Filter " + f.getId());
+        }
+
+        // Creating adapter for spinner
+        ArrayAdapter<String> dataAdapter = new ArrayAdapter<>(listener.getViewContext(),
+                R.layout.support_simple_spinner_dropdown_item, filterName);
+
+        // Drop down layout style - list view with radio button
+        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        // attaching data adapter to spinner
+        filterPicker.setAdapter(dataAdapter);
 
     }
 }
