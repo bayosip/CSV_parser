@@ -25,6 +25,10 @@ public class Car_Owners_Data implements Serializable {
         this.bio = csv[10];
     }
 
+    public int getId() {
+        return id;
+    }
+
     public int getCar_model_year() {
         return car_model_year;
     }

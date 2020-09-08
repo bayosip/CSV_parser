@@ -8,6 +8,7 @@ import android.view.animation.Animation;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -28,6 +29,7 @@ public class CarListFragment extends BaseFragment {
     private ImageButton filter;
     private Button loadMore;
     private EditText searchBar;
+    TextView noMatchMsg;
     private List<Car_Owners_Data>  displayList;
     private CarDataAdapter adapter;
     private Boolean reachedBottom = false;
@@ -68,6 +70,7 @@ public class CarListFragment extends BaseFragment {
         searchBar = v.findViewById(R.id.editSearch);
         filter = v.findViewById(R.id.buttonFilter);
         loadMore =v.findViewById(R.id.buttonLoadMore);
+        noMatchMsg = v.findViewById(R.id.textNoMatchesFound);
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(listener.getViewContext(),
                 RecyclerView.VERTICAL, false);
@@ -120,9 +123,14 @@ public class CarListFragment extends BaseFragment {
         adapter.notifyDataSetChanged();
 
         if(result.size() == 0){
+            noMatchMsg.setVisibility(View.VISIBLE);
+            carData.setVisibility(View.GONE);
             loadMore.setEnabled(true);
             loadMore.setText("Load More and Filter");
             loadMore.setVisibility(View.VISIBLE);
+        }else {
+            noMatchMsg.setVisibility(View.GONE);
+            carData.setVisibility(View.VISIBLE);
         }
     }
 

@@ -26,6 +26,8 @@ public class DataReader implements ModelInteractor {
 
     private static final String TAG = "DataReader";
     private int currentLine = 1;
+
+
     public static ModelInteractor getInstance(){
         return new DataReader();
     }
@@ -112,83 +114,6 @@ public class DataReader implements ModelInteractor {
                 // is directory
             }*/
             }
-        }
-    }
-
-    private class JsonTask extends AsyncTask<String, String, String> {
-        File file = null;
-
-        private JSONObject convertFileToJson(){
-            JSONObject obj = null;
-
-            return  obj;
-        }
-        protected void onPreExecute() {
-            super.onPreExecute();
-        }
-
-        protected String doInBackground(String... params) {
-
-            HttpURLConnection connection = null;
-            FileOutputStream fos = null;
-            String fileName = "filter.json";
-
-            try {
-                URL url = new URL(params[0]);
-                connection = (HttpURLConnection) url.openConnection();
-                connection.setRequestMethod("GET");
-                connection.setDoOutput(true);
-                connection.connect();
-
-                String PATH = Environment.getExternalStorageDirectory()
-                        + "/Venten/";
-                Log.d(TAG, "PATH: " + PATH);
-
-                file = new File(PATH);
-                if(!file.exists()) {
-                    file.mkdirs();
-                }
-
-                File outputFile = new File(file, fileName);
-                fos = new FileOutputStream(outputFile);
-                InputStream is = connection.getInputStream();
-
-                byte[] buffer = new byte[1024];
-                int len1;
-
-                while ((len1 = is.read(buffer)) != -1) {
-                    fos.write(buffer, 0, len1);
-                }
-
-                is.close();
-            } catch (MalformedURLException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            } finally {
-                if (connection != null) {
-                    connection.disconnect();
-                }
-                try {
-                    if (fos != null) {
-                        fos.flush();
-                        fos.close();
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-            return file != null? file.getAbsolutePath(): null;
-        }
-
-        @Override
-        protected void onPostExecute(String result) {
-            super.onPostExecute(result);
-            /*if (pd.isShowing()){
-                pd.dismiss();
-            }
-            txtJson.setText(result);*/
-            //presenterInterface.retrieveFilterAsJson(null);
         }
     }
 

@@ -23,7 +23,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -34,16 +33,19 @@ public class MainPresenter extends BasePresenter<MainViewInterface>  {
 
     private ModelInteractor interactor;
     private MainViewInterface viewInterface;
-    private List<Car_Owners_Data> carData;
+    private List<Car_Owners_Data> carData, incomingData, filterData;
     private Filter appliedFilter = null;
     private List<Filter> filters;
+    private Intent receiverRegistration;
 
     public MainPresenter(MainViewInterface view) {
         super(view);
         viewInterface = view;
         interactor = DataReader.getInstance();
         carData = new LinkedList<>();
+        filterData = new ArrayList<>();
         filters = new LinkedList<>();
+
         view.getViewContext().registerReceiver(downloadReciever, downloadIntentFilter());
     }
 
@@ -74,8 +76,12 @@ public class MainPresenter extends BasePresenter<MainViewInterface>  {
     }
 
     public void retrieveCarDataForDisplay(){
-        List<Car_Owners_Data> incomingData = interactor.readCsvDataFile();
-        if(incomingData!=null) {
+        if(incomingData!= null)
+            incomingData.clear();
+
+        incomingData = interactor.readCsvDataFile();
+
+        if(incomingData!=null && incomingData.size()>0) {
             carData.addAll(incomingData);
             if(appliedFilter==null)
                 viewInterface.updateDataListWith(incomingData);
@@ -83,24 +89,27 @@ public class MainPresenter extends BasePresenter<MainViewInterface>  {
                 applyFilterToList(appliedFilter);
             }
         }
+        incomingData = null;
     }
 
     @Override
     public void applyFilterToList(final Filter filter) {
         appliedFilter = filter;
-        GenUtilities.getHandler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                List<Car_Owners_Data> filterData = new ArrayList<>();
-                for (Car_Owners_Data data : carData){
-                    if(doesDataMatchFilter(filter, data)){
-                        filterData.add(data);
-                        Log.w(TAG, "run: " + data.getCar_model());
-                    }
-                }
-                viewInterface.updateDataListWithFilter(filterData);
+        List<Car_Owners_Data> dataList;
+        if(incomingData == null){
+            filterData.clear();
+            dataList = carData;
+        }else {
+            dataList = incomingData;
+        }
+        for (Car_Owners_Data data : dataList){
+            if(filter.checkEachFilterCategoryForMatch(data)){
+                filterData.add(data);
+                Log.w(TAG, "run: " + data.getCar_model());
             }
-        }, 3000);
+        }
+        viewInterface.updateDataListWithFilter(filterData);
+
     }
 
     protected boolean doesDataMatchFilter(Filter filter, Car_Owners_Data data){
@@ -161,7 +170,17 @@ public class MainPresenter extends BasePresenter<MainViewInterface>  {
         return intentFilter;
     }
 
-    public BroadcastReceiver getDownloadReciever() {
+    @Override
+    public Intent registerBCReceiver(Activity activity) {
+        if (receiverRegistration == null){
+            receiverRegistration = activity.registerReceiver(downloadReciever,
+                    downloadIntentFilter());
+        }
+        return receiverRegistration;
+    }
+
+    @Override
+    public BroadcastReceiver getBroadCastReceiver() {
         return downloadReciever;
     }
 

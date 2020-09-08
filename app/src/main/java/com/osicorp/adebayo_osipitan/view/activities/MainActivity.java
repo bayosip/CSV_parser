@@ -209,9 +209,18 @@ public class MainActivity extends AppCompatActivity implements MainViewInterface
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        if (presenter!=null) {
+            presenter.registerBCReceiver(MainActivity.this);
+        }
+    }
+
+    @Override
     protected void onPause() {
         super.onPause();
-        unregisterReceiver(presenter.getDownloadReciever());
+        if(presenter.registerBCReceiver(MainActivity.this)!= null)
+            unregisterReceiver(presenter.getBroadCastReceiver());
     }
 
     @Override
