@@ -103,18 +103,4 @@ public class DataReader implements ModelInteractor {
         }
         return false;
     }
-
-    private void checkForFiles(){
-        File f = Environment.getExternalStorageDirectory();
-        if(f.exists()) {
-            File[] files = f.listFiles();
-            for (File inFile : files) {
-                Log.w(TAG, "checkForFiles: " + inFile.getAbsolutePath());
-            /*if (inFile.isDirectory()) {
-                // is directory
-            }*/
-            }
-        }
-    }
-
 }
