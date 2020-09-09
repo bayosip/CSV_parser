@@ -88,7 +88,7 @@ public class Filter implements Serializable {
             //if yes for above
             if (isCategoryMatch){
                 //check if car colour is in range
-                if (this.colors != null) {
+                if (this.colors != null && this.colors.length > 0) {
                     for (String color : this.colors) {
                         if (color.equalsIgnoreCase(data.getCar_colour())) {
                             isCategoryMatch = true;
@@ -100,7 +100,7 @@ public class Filter implements Serializable {
                 Log.w(TAG, "checkEachFilterCategoryForMatch: " + Constants.KEY_COLORS +" is - " + isCategoryMatch);
                 //if yes
                 if(isCategoryMatch){
-                    if(this.countries!=null) {
+                    if(this.countries!=null && this.countries.length > 0) {
                         //check if car country is in range
                         for (String country : this.countries) {
                             if (country.equalsIgnoreCase(data.getCountry())) {
