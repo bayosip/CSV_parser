@@ -51,6 +51,7 @@ public class CarDataAdapter extends RecyclerView.Adapter<CarDataAdapter.DataView
 
         TextView carModel, carYear, carOwner;
         ImageButton details;
+        View view;
 
         public DataViewHolder(@NonNull View itemView) {
             super(itemView);

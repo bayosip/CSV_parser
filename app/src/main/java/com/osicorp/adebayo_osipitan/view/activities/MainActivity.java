@@ -23,7 +23,7 @@ import com.osicorp.adebayo_osipitan.model.GenUtilities;
 import com.osicorp.adebayo_osipitan.presenter.DataPresenterInterface;
 import com.osicorp.adebayo_osipitan.presenter.MainPresenter;
 import com.osicorp.adebayo_osipitan.view.MainViewInterface;
-import com.osicorp.adebayo_osipitan.view.fragments.CarOwnerFragment;
+import com.osicorp.adebayo_osipitan.view.fragments.FullDetailsFragment;
 import com.osicorp.adebayo_osipitan.view.fragments.FilterSelectionFragment;
 import com.osicorp.adebayo_osipitan.view.fragments.CarListFragment;
 
@@ -34,7 +34,7 @@ public class MainActivity extends AppCompatActivity implements MainViewInterface
     private static final String TAG = "MainActivity";
 
     private DataPresenterInterface presenter;
-    CarOwnerFragment cOFrag;
+    FullDetailsFragment cOFrag;
     FilterSelectionFragment fSFrag;
     CarListFragment listFrag;
     private TextView title;
@@ -56,6 +56,7 @@ public class MainActivity extends AppCompatActivity implements MainViewInterface
         presenter = new MainPresenter(MainActivity.this);
         listFrag = CarListFragment.getInstance();
         fSFrag = FilterSelectionFragment.getInstance();
+
 
         toolbar = findViewById(R.id.appbar_home);
         title = findViewById(R.id.toolbar_title);
@@ -84,6 +85,7 @@ public class MainActivity extends AppCompatActivity implements MainViewInterface
     }
 
     private void setupActionBar(){
+        title.setText("iCar");
         setSupportActionBar(toolbar);
         final ActionBar ab = getSupportActionBar();
 
@@ -115,7 +117,6 @@ public class MainActivity extends AppCompatActivity implements MainViewInterface
         fragmentTransaction.add(R.id.frag_layout, listFrag, "List");
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commitAllowingStateLoss();
-        //this.title.setText("iCar");
     }
 
     private String removeCurrentFragment() {
@@ -138,6 +139,7 @@ public class MainActivity extends AppCompatActivity implements MainViewInterface
 
     public void openFilterFrag(){
         setupOtherActionBar();
+        title.setText("Filter");
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.frag_layout, fSFrag, "Filter");
@@ -199,7 +201,14 @@ public class MainActivity extends AppCompatActivity implements MainViewInterface
 
     @Override
     public void showInDetail(int adapterPosition) {
-
+        setupOtherActionBar();
+        title.setText("Details");
+        Fragment fragment =  FullDetailsFragment.getInstance(presenter.getCarData().get(adapterPosition));
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(R.id.frag_layout, fragment, "Filter");
+        fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.commitAllowingStateLoss();
     }
 
     @Override
