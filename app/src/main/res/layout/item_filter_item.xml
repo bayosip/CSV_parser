@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@drawable/curved_view"
+    android:padding="@dimen/inside_padding"
+    android:layout_margin="@dimen/inside_padding">
+
+    <TextView
+        android:id="@+id/textItem"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Item item"
+        android:textColor="@android:color/white"/>
+
+</LinearLayout>

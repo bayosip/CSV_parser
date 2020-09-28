@@ -1,0 +1,246 @@
+package com.osicorp.adebayo_osipitan.view.activities;
+
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.widget.ContentLoadingProgressBar;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.lifecycle.Lifecycle;
+
+import android.app.Activity;
+import android.os.Bundle;
+import android.text.TextUtils;
+import android.util.Log;
+import android.widget.TextView;
+
+import com.osicorp.adebayo_osipitan.R;
+import com.osicorp.adebayo_osipitan.model.Car_Owners_Data;
+import com.osicorp.adebayo_osipitan.model.Constants;
+import com.osicorp.adebayo_osipitan.model.Filter;
+import com.osicorp.adebayo_osipitan.model.GenUtilities;
+import com.osicorp.adebayo_osipitan.presenter.DataPresenterInterface;
+import com.osicorp.adebayo_osipitan.presenter.MainPresenter;
+import com.osicorp.adebayo_osipitan.view.MainViewInterface;
+import com.osicorp.adebayo_osipitan.view.fragments.FullDetailsFragment;
+import com.osicorp.adebayo_osipitan.view.fragments.FilterSelectionFragment;
+import com.osicorp.adebayo_osipitan.view.fragments.CarListFragment;
+
+import java.util.List;
+
+public class MainActivity extends AppCompatActivity implements MainViewInterface {
+
+    private static final String TAG = "MainActivity";
+
+    private DataPresenterInterface presenter;
+    FullDetailsFragment cOFrag;
+    FilterSelectionFragment fSFrag;
+    CarListFragment listFrag;
+    private TextView title;
+    private ContentLoadingProgressBar pb;
+    private Toolbar toolbar;
+
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        init();
+
+        openListFrag();
+    }
+
+
+    private void init(){
+        presenter = new MainPresenter(MainActivity.this);
+        listFrag = CarListFragment.getInstance();
+        fSFrag = FilterSelectionFragment.getInstance();
+
+
+        toolbar = findViewById(R.id.appbar_home);
+        title = findViewById(R.id.toolbar_title);
+        pb = findViewById(R.id.loading_progress);
+        pb.hide();
+    }
+
+    @Override
+    public void showProgress() {
+        pb.show();
+    }
+
+    @Override
+    public void hideProgress() {
+        pb.hide();
+    }
+
+    @Override
+    public void changeToFilterFragment() {
+        openFilterFrag();
+    }
+
+    @Override
+    public void loadFilters() {
+        presenter.retrieveFilterAsJson(GenUtilities.getAppPref().getString(Constants.FILE_KEY, ""));
+    }
+
+    private void setupActionBar(){
+        title.setText("iCar");
+        setSupportActionBar(toolbar);
+        final ActionBar ab = getSupportActionBar();
+
+        ab.setDisplayShowCustomEnabled(true); // enable overriding the default toolbar layout
+        ab.setDisplayHomeAsUpEnabled(false);
+        ab.setDisplayShowCustomEnabled(false); // enable overriding the default toolbar layout
+        ab.setDisplayShowTitleEnabled(false);
+    }
+
+    private void setupOtherActionBar() {
+        // Get the ActionBar here to configure the way it behaves.
+        setSupportActionBar(toolbar);
+        // Get the ActionBar here to configure the way it behaves.
+        final ActionBar ab = getSupportActionBar();
+
+//        ab.setDisplayOptions();
+        ab.setDisplayShowHomeEnabled(true); // show or hide the default home button
+        ab.setDisplayHomeAsUpEnabled(true);
+        ab.setDisplayShowCustomEnabled(true); // enable overriding the default toolbar layout
+        ab.setDisplayShowTitleEnabled(false); // disable the default title element here (for centered title)
+    }
+
+    @Override
+    public void openListFrag() {
+        removeCurrentFragment();
+        setupActionBar();
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.add(R.id.frag_layout, listFrag, "List");
+        fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.commitAllowingStateLoss();
+    }
+
+    private String removeCurrentFragment() {
+        Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.frag_layout);
+        if (fragment != null) {
+            String tag = fragment.getTag();
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+
+            if (fragment.getLifecycle().getCurrentState() != Lifecycle.State.INITIALIZED) {
+                return null;
+            }
+            fragmentTransaction.remove(fragment).commitAllowingStateLoss();
+            return tag;
+        }else {
+            Log.e(TAG, "removeCurrentFragment: Fragment not removed");
+        }
+        return null;
+    }
+
+    public void openFilterFrag(){
+        setupOtherActionBar();
+        title.setText("Filter");
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(R.id.frag_layout, fSFrag, "Filter");
+        fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.commitAllowingStateLoss();
+    }
+
+    @Override
+    public Activity getViewContext() {
+        return MainActivity.this;
+    }
+
+    @Override
+    public List<Car_Owners_Data> getFullList() {
+        return presenter.getCarData();
+    }
+
+    @Override
+    public void loadCarData() {
+        presenter.retrieveCarDataForDisplay();
+    }
+
+    @Override
+    public void updateDataListWith(List<Car_Owners_Data> moreData) {
+        listFrag.addDataToFullList(moreData);
+    }
+
+    @Override
+    public void updateDataListWithFilter(List<Car_Owners_Data> filteredData) {
+        listFrag.updateListWithFilteredResults(filteredData);
+    }
+
+    @Override
+    public void updateFilterList(List<Filter> filters) {
+        fSFrag.updateSpinnerWithFilter(filters);
+    }
+
+    @Override
+    public void updateListWithSearch(List<Car_Owners_Data> searchedData) {
+
+    }
+
+    @Override
+    public void searchListForCarModel(String carModel) {
+
+    }
+
+    @Override
+    public void applyAPresetFilter(Filter filter) {
+        onBackPressed();
+        presenter.applyFilterToList(filter);
+    }
+
+    @Override
+    public void clearFilter() {
+        onBackPressed();
+        presenter.clearAllFiltersorSearch();
+    }
+
+    @Override
+    public void showInDetail(int adapterPosition) {
+        setupOtherActionBar();
+        title.setText("Details");
+        Fragment fragment =  FullDetailsFragment.getInstance(presenter.getCarData().get(adapterPosition));
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(R.id.frag_layout, fragment, "Filter");
+        fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.commitAllowingStateLoss();
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return true;
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (presenter!=null) {
+            presenter.registerBCReceiver(MainActivity.this);
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if(presenter.registerBCReceiver(MainActivity.this)!= null)
+            unregisterReceiver(presenter.getBroadCastReceiver());
+    }
+
+    @Override
+    public void onBackPressed() {
+        Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.frag_layout);
+        String tag =  fragment!= null ? fragment.getTag(): null;
+       if(!TextUtils.isEmpty(tag) && tag.equalsIgnoreCase("List")){
+            GenUtilities.exitApp(MainActivity.this);
+        }else {
+           setupActionBar();
+           getSupportFragmentManager().popBackStackImmediate();
+       }
+    }
+}

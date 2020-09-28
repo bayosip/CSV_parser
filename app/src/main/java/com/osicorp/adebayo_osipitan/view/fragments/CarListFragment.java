@@ -1,0 +1,152 @@
+package com.osicorp.adebayo_osipitan.view.fragments;
+
+import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.labo.kaji.fragmentanimations.MoveAnimation;
+import com.osicorp.adebayo_osipitan.R;
+import com.osicorp.adebayo_osipitan.model.Car_Owners_Data;
+import com.osicorp.adebayo_osipitan.view.list_ui.CarDataAdapter;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class CarListFragment extends BaseFragment {
+
+    private RecyclerView carData;
+    private ImageButton filter;
+    private Button loadMore;
+    private EditText searchBar;
+    TextView noMatchMsg;
+    private List<Car_Owners_Data>  displayList;
+    private CarDataAdapter adapter;
+    private Boolean reachedBottom = false;
+    private static  boolean isFirstLoad = true;
+
+    public static CarListFragment getInstance(){
+        return new CarListFragment();
+    }
+
+
+    @Nullable
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_data_list, container, false);
+        return view;
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        init();
+        initWidget(view);
+        if(isFirstLoad) {
+            listener.loadCarData();
+            isFirstLoad = false;
+        }
+    }
+
+    private void init(){
+        displayList = new ArrayList<>();
+        displayList.clear();
+        if(listener.getFullList().size()>0)displayList.addAll(listener.getFullList());
+    }
+
+    private void initWidget(View v){
+
+        carData = v.findViewById(R.id.listCarInfo);
+        searchBar = v.findViewById(R.id.editSearch);
+        filter = v.findViewById(R.id.buttonFilter);
+        loadMore =v.findViewById(R.id.buttonLoadMore);
+        noMatchMsg = v.findViewById(R.id.textNoMatchesFound);
+
+        LinearLayoutManager layoutManager = new LinearLayoutManager(listener.getViewContext(),
+                RecyclerView.VERTICAL, false);
+        carData.setLayoutManager(layoutManager);
+        adapter = new CarDataAdapter(displayList, listener);
+        carData.setAdapter(adapter);
+        carData.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                reachedBottom = !recyclerView.canScrollVertically(1);
+                if (reachedBottom) {
+                    loadMore.setEnabled(true);
+                    loadMore.setVisibility(View.VISIBLE);
+                }
+            }
+        });
+
+        filter.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                listener.changeToFilterFragment();
+            }
+        });
+
+        loadMore.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                loadMore.setEnabled(false);
+                listener.loadCarData();
+            }
+        });
+    }
+
+    public void revertToOriginalList(List<Car_Owners_Data> data){
+        displayList.clear();
+        displayList.addAll(data);
+        adapter.notifyDataSetChanged();
+    }
+
+    public void addDataToFullList(List<Car_Owners_Data> moreData){
+        loadMore.setVisibility(View.GONE);
+        displayList.addAll(moreData);
+        adapter.notifyItemChanged(0);
+    }
+
+    public void updateListWithFilteredResults(List<Car_Owners_Data> result){
+        displayList.clear();
+        displayList.addAll(result);
+        adapter.notifyDataSetChanged();
+
+        if(result.size() == 0){
+            noMatchMsg.setVisibility(View.VISIBLE);
+            carData.setVisibility(View.GONE);
+            loadMore.setEnabled(true);
+            loadMore.setText("Load More and Filter");
+            loadMore.setVisibility(View.VISIBLE);
+        }else {
+            noMatchMsg.setVisibility(View.GONE);
+            carData.setVisibility(View.VISIBLE);
+        }
+    }
+
+    private void searchForCarModel(String model){
+        displayList.clear();
+        adapter.notifyDataSetChanged();
+        for (Car_Owners_Data car: listener.getFullList() ){
+            if(car.getCar_model().equalsIgnoreCase(model)){
+                displayList.add(car);
+                adapter.notifyItemChanged(0);
+            }
+        }
+    }
+
+    @Override
+    public Animation onCreateAnimation(int transit, boolean enter, int nextAnim) {
+        return MoveAnimation.create(MoveAnimation.RIGHT, enter, 100);
+    }
+}
